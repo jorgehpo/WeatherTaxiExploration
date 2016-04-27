@@ -51,8 +51,7 @@ weather = file_weather_indexed.reduceByKey(lambda a,b:a, 1)
 file_taxi = sc.textFile("s3://jpo286-ds1004-sp16/Project/datasets/yellow_tripdata_2015*")
 
 #removing header and splitting ","
-header_taxi = file_taxi.first()
-file_taxi = file_taxi.filter(lambda line: line!=header_taxi).map(lambda row: row.split(","))
+file_taxi = file_taxi.filter(lambda line: line[0:8]!="VendorID").map(lambda row: row.split(","))
 
 # indexing taxi by date
 def createYearMonthDayHourKey_taxi(line):

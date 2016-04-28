@@ -33,10 +33,16 @@ def createYearMonthDayHourKey_weather(line):
 
 file_weather_indexed = file_weather.map(createYearMonthDayHourKey_weather)
 
-# removing duplicate hours
-weather = file_weather_indexed.reduceByKey(lambda a,b:a, 1)
+# removing and cleaning duplicate hours
+# if there is a missing value, search for value in repeated cells
+def remove_duplicate_weather(a,b):
+    for i in range(len(a)):
+        if a[i][0]=='*'
+            a[i] = b[i]
+    return a;
 
-
+#weather = file_weather_indexed.reduceByKey(lambda a,b:a, 1)
+weather = file_weather_indexed.reduceByKey(remove_duplicate_weather)
 
 
 ######################################################################
@@ -81,5 +87,5 @@ def toCSVLine(data):
     return ','.join([str(d) for d in data[0]]) + ',' + ','.join([str(d) for d in data[1][0]]) + ',' + ','.join([str(d) for d in data[1][1]]) #joining key and  values
 
 lines_out = joined_data.map(toCSVLine)
-lines_out.saveAsTextFile('s3://jpo286-ds1004-sp16/Project/processed_taxi_weather.csv')
+lines_out.saveAsTextFile('s3://jpo286-ds1004-sp16/Project/processed_taxi_weather_cleaned.csv')
 

@@ -4,4 +4,4 @@ Jorge Henrique Piazentin Ono (jpo286) and Raoni de Paula Lourenço (rdp336)
 
 jorgehpo [at] nyu [dot] edu | raoni [at] nyu [dot] edu
 
-Big data project repository. First commit
+Big data project repository. 

@@ -138,11 +138,13 @@ grouped_histogram = indexed_histogram.groupByKey()
 
 data_retrieved = grouped_histogram.collect()
 
-output_folder = "AggregatedTaxiWeather"
+output_folder = "."
 
-#parameter file:
-path_parameter_file = os.path.join(output_folder, "parameters_aggregation.json")
-parameters = {
+#Saving everything
+
+output = {}
+
+output['parameters'] = {
     'min_longitude':min_longitude,
     'max_longitude':max_longitude,
     'min_latitude':min_latitude,
@@ -152,15 +154,24 @@ parameters = {
     'size_bin_latitude':size_bin_latitude,
     'size_bin_longitude':size_bin_longitude
 }
-f_parameter = open(path_parameter_file,'w')
-json.dump(parameters, f_parameter, sort_keys=True, indent=4, separators=(',', ': '))
-f_parameter.close()
+
+output['queries'] = []
 
 #2-D histogram data files:
 
 for data in data_retrieved:
     (month, weekday, hour, weather, temperature,typeOp) = data[0] #key
-    fname = str(month) + "_" + str(weekday) + "_" + str(hour) + "_" + str(weather) + "_" + str(temperature) + "_" + str(typeOp) + ".json"
-    f = open(os.path.join(output_folder, fname),'w')
-    json.dump(list(data[1]), f, sort_keys=True, indent=4, separators=(',', ': '))
-    f.close()
+    current_query = {}
+    current_query['month'] = month
+    current_query['weekday'] = weekday
+    current_query['hour'] = hour
+    current_query['weather'] = weather
+    current_query['temperature'] = temperature
+    current_query['typeOp'] = typeOp
+    current_query['heatmap'] = list(data[1])
+    output['queries'].append(current_query)
+
+fname = "taxi_weather_queries.json"
+f = open(os.path.join(output_folder, fname),'w')
+json.dump(output, f)
+f.close()

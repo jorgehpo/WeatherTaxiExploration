@@ -32,10 +32,12 @@
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmrU5UYHKEjelxYybDMy37X-ZW5fkEWBc&libraries=visualization" type="text/javascript"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js" charset="utf-8" type="text/javascript"></script>
         <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js" charset="utf-8" type="text/javascript"></script>
+        <script src="bower_components/dcjs/dc.min.js" charset="utf-8" type="text/javascript"></script>
 
         <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
         <link rel="stylesheet" type="text/css" href="bower_components/bootstrap-select/dist/css/bootstrap-select.css">
+        <link rel="stylesheet" type="text/css" href="bower_components/dcjs/dc.min.css">
 
 
      </head>
@@ -111,10 +113,12 @@
 
     </div>
 
-
-
-
         <div id="map"></div>
+
+
+<div id="weekdayChart" style="position:absolute; top:100px; left:100px;"></div>
+
+
         <script>
             "use strict";
             $( document ).ready(initMap);
@@ -154,6 +158,9 @@
                 });
                 heatmap.setMap(map);
 
+
+
+
                 $("#queryBtn").click(function(){
                     dimension["month"].filter(createFilterFunction( $("#selectMonth") ) );
                     dimension["weekday"].filter(createFilterFunction( $("#selectWeekday") ) );
@@ -177,7 +184,6 @@
                     var size_bin_longitude = parameters["size_bin_longitude"];
                     var heatmapAccumm = new Int32Array(nbins_latitude * nbins_longitude);
 
-
                     heatmapData.clear()
 
                     filtered_data.forEach(function(d){
@@ -190,6 +196,8 @@
                             heatmapAccumm[latitude*nbins_longitude + longitude] += bin[2];
                         }
                     });
+
+                    console.log(heatmapAccumm)
 
                     for (var latitude = 0; latitude < nbins_latitude; latitude++){
                         for (var longitude = 0; longitude < nbins_longitude; longitude++){
@@ -222,6 +230,18 @@
                     dimension["hour"] = data.dimension(function(fact){return fact["hour"]})
                     dimension["weather"] = data.dimension(function(fact){return fact["weather"]})
                     dimension["temperature"] = data.dimension(function(fact){return fact["temperature"]})
+
+                    var gWeekday = dimension["weekday"].group();
+
+                    var dayOfWeekChart = dc.rowChart('#weekdayChart');
+                    dayOfWeekChart.width(180)
+                    .height(180)
+                    .margins({top: 20, left: 10, right: 10, bottom: 20})
+                    .group(gWeekday)
+                    .dimension(dimension["weekday"]);
+                    dayOfWeekChart.render()
+
+
                 });
             }
         </script>

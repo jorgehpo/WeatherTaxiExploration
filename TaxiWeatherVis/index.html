@@ -197,7 +197,6 @@
                         }
                     });
 
-                    console.log(heatmapAccumm)
 
                     for (var latitude = 0; latitude < nbins_latitude; latitude++){
                         for (var longitude = 0; longitude < nbins_longitude; longitude++){
@@ -209,7 +208,6 @@
 
                     if (heatmapData.length > 0){
                         heatmap.setMap(map);
-                        //heatmap.setData(heatmapData);
                     }else{
                         heatmap.setMap()
                     }
@@ -238,8 +236,13 @@
                     .height(180)
                     .margins({top: 20, left: 10, right: 10, bottom: 20})
                     .group(gWeekday)
-                    .dimension(dimension["weekday"]);
+                    .dimension(dimension["weekday"])
+                    .label(function (d){
+                       return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][d.key]
+                    }); //temp1.filters()
                     dayOfWeekChart.render()
+
+                    console.log(dayOfWeekChart)
 
 
                 });

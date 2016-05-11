@@ -65,9 +65,9 @@ def spherical_distance(lat1,long1,lat2,long2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     return (R * c)
 
-#each "bin" is about 500x500 meters
-nbins_latitude = int(spherical_distance(min_latitude,0,max_latitude,0)/500.)
-nbins_longitude = int(spherical_distance(0,min_longitude,0,max_longitude)/500.)
+#each "bin" is about 100x100 meters
+nbins_latitude = int(spherical_distance(min_latitude,0,max_latitude,0)/100.)
+nbins_longitude = int(spherical_distance(0,min_longitude,0,max_longitude)/100.)
 
 size_bin_latitude = (max_latitude - min_latitude)/nbins_latitude
 size_bin_longitude = (max_longitude - min_longitude)/nbins_longitude
@@ -78,7 +78,7 @@ size_bin_longitude = (max_longitude - min_longitude)/nbins_longitude
 def key_value_heatmap_aggregation(row, typeOp = 'pickup'): #typeOp:pickup or dropoff
     month = int(row[1])
     weekday = dt.date(int(row[0]),int(row[1]),int(row[2])).weekday()
-    hour = int(int(row[3]) / 6) #0-4, 4-8, 8-12, 12-16, 16-20, 20-24
+    hour = int(int(row[3]) / 4) #0-4, 4-8, 8-12, 12-16, 16-20, 20-24
     weather_list = row[35:43]
     for i in range(8):
         if weather_list[i][0] == "*":
@@ -96,7 +96,7 @@ def key_value_heatmap_aggregation(row, typeOp = 'pickup'): #typeOp:pickup or dro
     elif weather_id < 80:
         weather = 'SolidPrecipitation'
     temperature = max(0,int(row[44])/20+1) #-20 - 0, 0-20, 20-40, 40-60, 60-80, 80-100 F
-    if type == 'pickup':
+    if typeOp == 'pickup':
         longitude =  float(row[9])
         latitude =   float(row[10])
     else:

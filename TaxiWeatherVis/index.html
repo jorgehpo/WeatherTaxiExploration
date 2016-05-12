@@ -5,6 +5,7 @@
         <meta name="viewport" content="initial-scale=1.0">
         <meta charset="utf-8">
         <style>
+
             #map {
                 position: absolute;
                 top:50px;
@@ -12,20 +13,34 @@
                 width:100%;
             }
 
-            #menu {
-                margin-left: 8px;
-                margin-top: 7px;
+            #header {
+                margin-left: 10px;
+                margin-top: -7px;
                 height:50px;
             }
 
             html,body {
                 height:100%;
                 width:100%;
+                  -webkit-touch-callout: none; /* iOS Safari */
+                  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+                  -khtml-user-select: none;    /* Konqueror */
+                  -moz-user-select: none;      /* Firefox */
+                  -ms-user-select: none;       /* Internet Explorer/Edge */
+                  user-select: none;           /* Non-prefixed version, currently*/
+
             }
 
-
+            #plots{
+              position:absolute;
+              left:30px;
+              top:100px;
+              bottom: 50px;
+              width: 250px;
+            }
 
         </style>
+
         <script src="bower_components/jQuery/dist/jquery.min.js" type="text/javascript"></script>
         <script src="bower_components/crossfilter/crossfilter.min.js" type="text/javascript"></script>
         <script src="bower_components/d3/d3.min.js" charset="utf-8" type="text/javascript"></script>
@@ -33,221 +48,51 @@
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js" charset="utf-8" type="text/javascript"></script>
         <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js" charset="utf-8" type="text/javascript"></script>
         <script src="bower_components/dcjs/dc.min.js" charset="utf-8" type="text/javascript"></script>
+        <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" charset="utf-8" type="text/javascript"></script>
+        <script src="main.js" charset="utf-8" type="text/javascript"></script>
 
         <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
         <link rel="stylesheet" type="text/css" href="bower_components/bootstrap-select/dist/css/bootstrap-select.css">
         <link rel="stylesheet" type="text/css" href="bower_components/dcjs/dc.min.css">
+        <link rel="stylesheet" type="text/css" href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css">
 
-
-     </head>
+    </head>
     <body>
-        <div id="menu">
-        <!--<label>Month:</label>-->
-
-        <select id="selectMonth" class="selectpicker" multiple data-width="auto" title="Month">
-          <option value="1">January</option>
-          <option value="2">February</option>
-          <option value="3">March</option>
-          <option value="4">April</option>
-          <option value="5">May</option>
-          <option value="6">June</option>
-          <option value="7">July</option>
-          <option value="8">August</option>
-          <option value="9">September</option>
-          <option value="10">October</option>
-          <option value="11">November</option>
-          <option value="12">December</option>
-        </select>
-
-        <!--<label>Weekday:</label>-->
-        <select id="selectWeekday" class="selectpicker" multiple data-width="auto" title="Weekday">
-          <option value="0">Monday</option>
-          <option value="1">Tuesday</option>
-          <option value="2">Wednesday</option>
-          <option value="3">Thursday</option>
-          <option value="4">Friday</option>
-          <option value="5">Saturday</option>
-          <option value="6">Sunday</option>
-        </select>
-
-        <!--<label>Time:</label>-->
-        <select id="selectHour" class="selectpicker" multiple data-width="auto" title="Hour">
-          <option value="0">0am - 4am</option>
-          <option value="1">4am - 8am</option>
-          <option value="2">8am - 12am</option>
-          <option value="3">12pm - 4pm</option>
-          <option value="4">4pm - 8pm</option>
-          <option value="5">8pm - 12pm</option>
-        </select>
-
-
-        <!--<label>Temperature:</label>-->
-        <select id="selectTemperature" class="selectpicker" multiple data-width="auto" title="Temperature">
-          <option value="0">-20&deg; F - 0&deg; F</option>
-          <option value="1">0&deg; F - 20&deg; F</option>
-          <option value="2">20&deg; F - 40&deg; F</option>
-          <option value="3">40&deg; F - 60&deg; F</option>
-          <option value="4">60&deg; F - 80&deg; F</option>
-          <option value="5">80&deg; F - 100&deg; F</option>
-        </select>
-
-        <!--<label>Weather:</label>-->
-        <select id="selectWeather" class="selectpicker" multiple data-width="auto" title="Weather">
-          <option value="NoPrecipitation">No Precipitation</option>
-          <option value="Drizzle">Drizzle</option>
-          <option value="Rain">Rain</option>
-          <option value="SolidPrecipitation">Solid Precipitation</option>
-          <option value="ShoweryPrecipitation">Showery Precipitation</option>
-        </select>
-
-
-
-
-        <!--<label>Type:</label>-->
-        <label><input type="radio" name="typeOp" value="pickup">Pickup</label>
-        <label><input type="radio" name="typeOp" value="dropoff" checked="checked" >Dropoff</label>
-
-
-        <button type="button" class="btn btn-default" id="queryBtn"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Query</button>
-
-    </div>
+        <div id="header">
+            <img src="taxi.png" width="50px" height="50px" style="float:left;"><h2>Weather-Taxi Dashboard</h2>
+        </div>
 
         <div id="map"></div>
 
-
-<div id="weekdayChart" style="position:absolute; top:100px; left:100px;"></div>
-
-
-        <script>
-            "use strict";
-            $( document ).ready(initMap);
-
-            var map;
-            var heatmap;
-            var heatmapData = new google.maps.MVCArray();
-;
-            var dimension = {};
-            var data, parameters;
-
-            function createFilterFunction(input){
-                var query = function(x){
-                    var selected = input.val();
-                    if (selected == null){
-                        return true;
-                    }else{
-                        for (var i = 0; i < selected.length; i++){
-                            if (x == selected[i])
-                                return true;
-                        }
-                        return false;
-                    }
-                }
-                return query;
-            }
-
-            function initMap() {
-                $(".selectpicker").selectpicker()
-                map = new google.maps.Map(document.getElementById("map"), {
-                    center: {lat: 40.7128, lng: -74.0059},
-                    zoom: 11
-                });
-
-                heatmap = new google.maps.visualization.HeatmapLayer({
-                        data: heatmapData,
-                });
-                heatmap.setMap(map);
+        <div id="plots" class="col-sm=3 well">
+          <label>
+            Heatmap Radius
+          <input type="range" id="rangeRadius" min="1" max="100"/>
+          </label>
+          <label><input type="radio" name="typeOp" value="pickup">Pickup</label>
+          <label><input type="radio" name="typeOp" value="dropoff" checked="checked" >Dropoff</label>
+          <button type="button" class="btn btn-default" id="queryBtn"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Query</button>
+          <hr>
+          <label>Month
+          <div id="monthChart"></div>
+          </label>
+          <label>Weekday
+          <div id="weekdayChart"></div>
+          </label>
+          <label>Hour
+            <div id="hourChart"></div>
+          </label>
+          <label>Temperature
+          <div id="tempChart"></div>
+        </label>
+        <label>Weather
+          <div id="weatherChart"></div>
+        </label>
+        </div>
 
 
-
-
-                $("#queryBtn").click(function(){
-                    dimension["month"].filter(createFilterFunction( $("#selectMonth") ) );
-                    dimension["weekday"].filter(createFilterFunction( $("#selectWeekday") ) );
-                    dimension["hour"].filter(createFilterFunction( $("#selectHour") ) );
-                    dimension["temperature"].filter(createFilterFunction( $("#selectTemperature") ) );
-                    dimension["weather"].filter(createFilterFunction( $("#selectWeather") ) );
-                    dimension["typeOp"].filter( $('input[name=typeOp]:checked').val() );
-                    console.log(data.groupAll().reduceCount().value());
-
-
-
-                    var start_latitude = parameters["min_latitude"] + parameters["size_bin_latitude"]/2;
-                    var start_longitude = parameters["min_longitude"] + parameters["size_bin_longitude"]/2;
-                    var filtered_data = dimension["typeOp"].top(Infinity);
-
-                    var nbins_latitude = parameters["nbins_latitude"];
-
-                    var nbins_longitude = parameters["nbins_longitude"];
-
-                    var size_bin_latitude = parameters["size_bin_latitude"];
-                    var size_bin_longitude = parameters["size_bin_longitude"];
-                    var heatmapAccumm = new Int32Array(nbins_latitude * nbins_longitude);
-
-                    heatmapData.clear()
-
-                    filtered_data.forEach(function(d){
-                        for (var i = 0; i < d["heatmap"].length; i++){
-                            var bin = d["heatmap"][i];
-                            var latitude =  bin[0];
-                            var longitude = bin[1];
-                            // latitude: i
-                            // longitude: j
-                            heatmapAccumm[latitude*nbins_longitude + longitude] += bin[2];
-                        }
-                    });
-
-
-                    for (var latitude = 0; latitude < nbins_latitude; latitude++){
-                        for (var longitude = 0; longitude < nbins_longitude; longitude++){
-                            if (heatmapAccumm[latitude*nbins_longitude + longitude] > 0){
-                                heatmapData.push({location: new google.maps.LatLng(start_latitude + size_bin_latitude *latitude, start_longitude + size_bin_longitude * longitude), weight: heatmapAccumm[latitude*nbins_longitude + longitude]});
-                            }
-                        }                        
-                    }
-
-                    if (heatmapData.length > 0){
-                        heatmap.setMap(map);
-                    }else{
-                        heatmap.setMap()
-                    }
-
-                    
-
-                }); 
-
-
-                d3.json("taxi_weather_queries.json",function(data_json){
-                    
-                    parameters = data_json["parameters"];
-                    data = crossfilter(data_json["queries"])
-
-                    dimension["typeOp"] = data.dimension(function(fact){return fact["typeOp"]});
-                    dimension["weekday"] = data.dimension(function(fact){return fact["weekday"]});
-                    dimension["month"] = data.dimension(function(fact){return fact["month"]})
-                    dimension["hour"] = data.dimension(function(fact){return fact["hour"]})
-                    dimension["weather"] = data.dimension(function(fact){return fact["weather"]})
-                    dimension["temperature"] = data.dimension(function(fact){return fact["temperature"]})
-
-                    var gWeekday = dimension["weekday"].group();
-
-                    var dayOfWeekChart = dc.rowChart('#weekdayChart');
-                    dayOfWeekChart.width(180)
-                    .height(180)
-                    .margins({top: 20, left: 10, right: 10, bottom: 20})
-                    .group(gWeekday)
-                    .dimension(dimension["weekday"])
-                    .label(function (d){
-                       return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][d.key]
-                    }); //temp1.filters()
-                    dayOfWeekChart.render()
-
-                    console.log(dayOfWeekChart)
-
-
-                });
-            }
-        </script>
-   </body>
+        
+    </body>
 </html>
 

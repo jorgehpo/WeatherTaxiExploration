@@ -27,36 +27,41 @@ function createFilterFunction(input){
 
 
 function initMap() {
-    $(".selectpicker").selectpicker()
-        map = new google.maps.Map(document.getElementById("map"), {
-            center: {lat: 40.7128, lng: -74.0059},
-            zoom: 12,
-            mapTypeControlOptions: {
-              mapTypeIds: [],
-              disableDefaultUI: true
-            }
-        });
+    $(".selectpicker").selectpicker();
+
+    $("#rangeRadius").slider({
+        formatter: function(value) {
+            return 'Current value: ' + value;
+        }
+    });
+
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: {lat: 40.7128, lng: -74.0059},
+        zoom: 12,
+        mapTypeControlOptions: {
+          mapTypeIds: [],
+          disableDefaultUI: true
+        },
+        styles:[{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#444444"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#f2f2f2"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#3182bd"},{"visibility":"on"}]}]
+    });
 
     heatmap = new google.maps.visualization.HeatmapLayer({
         data: heatmapData,
+        radius:14
     });
     heatmap.setMap(map);
 
-    google.maps.event.addListener(map, 'zoom_changed', function () {
-        console.log(map.getZoom());
-        heatmap.setOptions({radius:Math.log(map.getZoom())*10});
+    $("#rangeRadius").slider().on("slideStop",function(x){
+        heatmap.setOptions({radius:+$("#rangeRadius").val()});
     });
 
-    $("#rangeRadius").change(function(x){
-        heatmap.setOptions({radius:$("#rangeRadius").val()});
-    });
+    $("#txtReport").text("0 taxi trips selected.");
 
     $("#queryBtn").click(function(){
         var total = 0
         dimension["typeOp"].filter( $('input[name=typeOp]:checked').val() );
 
-        console.log(data.groupAll().reduceCount().value());
-
+        
         var start_latitude = parameters["min_latitude"] + parameters["size_bin_latitude"]/2;
         var start_longitude = parameters["min_longitude"] + parameters["size_bin_longitude"]/2;
         var filtered_data = dimension["typeOp"].top(Infinity);
@@ -84,6 +89,8 @@ function initMap() {
         });
 
         console.log(total)
+
+        $("#txtReport").text(numeral(total).format("0,0") + " taxi trips selected.");
 
         for (var latitude = 0; latitude < nbins_latitude; latitude++){
             for (var longitude = 0; longitude < nbins_longitude; longitude++){
@@ -133,7 +140,7 @@ function initMap() {
             .label(function (d){
                 return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][d.key-1];
             });
-
+        monthChart.colors(d3.scale.ordinal().range(['#3182bd']));
         monthChart.render();
                 
         var dayOfWeekChart = dc.rowChart('#weekdayChart');
@@ -146,6 +153,7 @@ function initMap() {
             .label(function (d){
                 return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][d.key]
             }); 
+        dayOfWeekChart.colors(d3.scale.ordinal().range(['#3182bd']));
         dayOfWeekChart.render();
 
 
@@ -159,6 +167,7 @@ function initMap() {
             .label(function (d){
                 return ["0am - 4am","4am - 8am","8am - 12am","12pm - 4pm","4pm - 8pm","8pm - 12pm"][d.key]
             }); 
+        hourChart.colors(d3.scale.ordinal().range(['#3182bd']));
         hourChart.render();
 
 
@@ -172,6 +181,7 @@ function initMap() {
             .label(function (d){
                 return ["-20° F - 0° F","0° F - 20° F","20° F - 40° F","40° F - 60° F","60° F - 80° F","80° F - 100° F"][d.key]
             }); 
+        tempChart.colors(d3.scale.ordinal().range(['#3182bd']));
         tempChart.render();
 
 
@@ -185,6 +195,9 @@ function initMap() {
             .label(function (d){
                 return {"NoPrecipitation":"No Precipitation", "Drizzle":"Drizzle", "Rain":"Rain", "SolidPrecipitation":"Solid Precipitation", "ShoweryPrecipitation":"Showery Precipitation"}[d.key]
             }); 
+        weatherChart.colors(d3.scale.ordinal().range(['#3182bd']));
         weatherChart.render();
+
+        console.log(weatherChart)
       });
 }//initmap

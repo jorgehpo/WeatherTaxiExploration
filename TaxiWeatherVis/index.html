@@ -31,9 +31,17 @@
             #map {
                 position: absolute;
                 top:55px;
-                left:270px;
+                left:10.7%;
                 bottom:0px;
-                width:100%;
+                width:39%;
+            }
+
+            #map2 {
+                position: absolute;
+                top:55px;
+                left:50%;
+                bottom:0px;
+                width:39%;
             }
 
             #header {
@@ -59,7 +67,15 @@
               left:10px;
               top: 55px;
               bottom: 0px;
-              width: 250px;
+              width: 10%;
+            }
+
+            #plots2{
+              position:absolute;
+              left: 89.5%;
+              top: 55px;
+              bottom: 0px;
+              width: 10%;
             }
 
             .dc-chart g.row text {
@@ -84,33 +100,67 @@
         <div id="map"></div>
 
         <div id="plots" class="col-sm=3 well">
-          <label>
+            <label>
             Heatmap Radius
-          <input id="rangeRadius" data-slider-id='ex1Slider' type="text" data-slider-min="1" data-slider-max="100" data-slider-step="1" data-slider-value="14"/>
-          </label>
+            <input id="rangeRadius" data-slider-id='ex1Slider' type="text" data-slider-min="1" data-slider-max="100" data-slider-step="1" data-slider-value="14"/>
+            </label>
 
-          <label><input type="radio" name="typeOp" value="pickup">Pickup</label>
-          <label><input type="radio" name="typeOp" value="dropoff" checked="checked" >Dropoff</label>
-          <button type="button" class="btn btn-default" id="queryBtn"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Query</button>
-          <hr>
-          <div id="txtReport"></div>
-          <hr>
+            <label><input type="radio" name="typeOp" value="pickup">Pickup</label>
+            <label><input type="radio" name="typeOp" value="dropoff" checked="checked" >Dropoff</label>
+            <button type="button" class="btn btn-default" id="queryBtn"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Query</button>
+            <hr>
+            <div id="txtReport"></div>
+            <hr>
 
-          <label>Month
-          <div class="whiteBackground"><div id="monthChart"></div></div>
-          </label>
-          <label>Weekday
-          <div class="whiteBackground"><div id="weekdayChart"></div></div>
-          </label>
-          <label>Hour
+            <label>Month
+            <div class="whiteBackground"><div id="monthChart"></div></div>
+            </label>
+            <label>Weekday
+            <div class="whiteBackground"><div id="weekdayChart"></div></div>
+            </label>
+            <label>Hour
             <div class="whiteBackground"><div id="hourChart"></div></div>
-          </label>
-          <label>Temperature
-          <div class="whiteBackground"><div id="tempChart"></div></div>
-        </label>
-        <label>Weather
-          <div class="whiteBackground"><div id="weatherChart"></div></div>
-        </label>
+            </label>
+            <label>Temperature
+            <div class="whiteBackground"><div id="tempChart"></div></div>
+            </label>
+            <label>Weather
+            <div class="whiteBackground"><div id="weatherChart"></div></div>
+            </label>
+        </div>
+
+
+        <div id="map2"></div>
+
+
+        <div id="plots2" class="col-sm=3 well">
+            <label>
+            Heatmap Radius
+            <input id="rangeRadius2" data-slider-id='ex1Slider' type="text" data-slider-min="1" data-slider-max="100" data-slider-step="1" data-slider-value="14"/>
+            </label>
+
+            <label><input type="radio" name="typeOp2" value="pickup">Pickup</label>
+            <label><input type="radio" name="typeOp2" value="dropoff" checked="checked" >Dropoff</label>
+            <button type="button" class="btn btn-default" id="queryBtn2"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Query</button>
+            <hr>
+            <div id="txtReport2"></div>
+            <hr>
+
+            <label>Month
+            <div class="whiteBackground"><div id="monthChart2"></div></div>
+            </label>
+            <label>Weekday
+            <div class="whiteBackground"><div id="weekdayChart2"></div></div>
+            </label>
+            <label>Hour
+            <div class="whiteBackground"><div id="hourChart2"></div></div>
+            </label>
+            <label>Temperature
+            <div class="whiteBackground"><div id="tempChart2"></div></div>
+            </label>
+            <label>Weather
+            <div class="whiteBackground"><div id="weatherChart2"></div></div>
+            </label>
         </div>
 
 

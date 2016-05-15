@@ -89,7 +89,13 @@ function initMap() {
     });
 
 
+    map2.addListener('center_changed', function() {
+        map.panTo(map2.getCenter());
+    });
 
+    google.maps.event.addListener(map,"mousemove",function(e){
+        console.log(e.latLng.lat())
+    });
 
 
     heatmap = new google.maps.visualization.HeatmapLayer({

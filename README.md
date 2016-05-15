@@ -1,6 +1,6 @@
 # Understanding the Complex Interactions in New York City: Weather and Taxi
 
-![TaxiWeatherDashboard](https://raw.githubusercontent.com/jorgehpo/WeatherTaxiExploration/master/Imgs/ColdVsHotUpperEastSide.png)
+![TaxiWeatherDashboard](https://raw.githubusercontent.com/jorgehpo/WeatherTaxiExploration/master/Imgs/system.jpg)
 
 Jorge Henrique Piazentin Ono (jpo286) and Raoni de Paula Lourenço (rdp336)
 
